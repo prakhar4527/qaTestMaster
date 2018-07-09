@@ -18,7 +18,6 @@ public class MyCollection implements DynamicArray{
 	 */
 	@SuppressWarnings("unused")
 	private int[] numArray;
-	int cap;
 	int addedSoFar=0;
 	/**
 	 * It constructs an empty Collection object with an array capacity specified by the integer
@@ -26,7 +25,6 @@ public class MyCollection implements DynamicArray{
 	 */
 	public MyCollection(int arraySize){
 		numArray = new int[arraySize];
-		cap=arraySize;
 	}
 
 	public int search(int searchingNum) {
@@ -38,37 +36,32 @@ public class MyCollection implements DynamicArray{
 			{
 				return i;
 			}
-			else
-			{
-				return -1;
-			}
 		}
-		return 0;
+		return -1;
 	}
 
-	public boolean add(int numberToAdd) {
+	public boolean add(int numberToAdd) 
+	{
 		// TODO Auto-generated method stub
 		if(search(numberToAdd)!=-1)
-		{
-			if(numArray.length>=cap)
-			{
-				doubleCapacity();
-			}
-			for(int i=numArray.length;i>0;i--)
+			return false;
+		int count=getCount();
+		if(count==numArray.length)
+			doubleCapacity();
+		if(search(numberToAdd)==-1 && count<numArray.length)
+			/*for(int i=numArray.length;i>0;i--)
 			{
 				numArray[i]=numArray[i-1];
-			}
-			numArray[0]=numberToAdd;
-			addedSoFar++;
+			}*/
+			numArray[count]=numberToAdd;
+		addedSoFar++;
 			return true;
-		}
-		return false;
 	}
 
 	public void doubleCapacity() {
 		// TODO Auto-generated method stub
-		int[] newArray=new int[cap*2];
-		for(int i=0;i<numArray.length;i++)
+		int[] newArray=new int[numArray.length*2];
+		for(int i=0;i<addedSoFar;i++)
 		{
 			newArray[i]=numArray[i];
 		}
@@ -78,16 +71,17 @@ public class MyCollection implements DynamicArray{
 	public boolean remove(int numberToRemove) {
 		// TODO Auto-generated method stub
 		int index=search(numberToRemove);
-		int[] newArray=new int[numArray.length];
-		newArray=numArray;
+		/*int[] newArray=new int[numArray.length];
+		newArray=numArray;*/
 		if(index != -1)
 		{
-			for(int i=newArray.length-1;i>index;i--)
+			for(int i=index;i<addedSoFar;i++)
 			{
-				int t=newArray[i-1];
-				newArray[i-1]=newArray[i];
+				/*int t=newArray[i-1];
+				newArray[i-1]=newArray[i];*/
+				numArray[i]=numArray[i+1];
 			}
-			numArray=newArray;
+			//numArray=newArray;
 			addedSoFar--;
 			return true;
 		}
@@ -101,51 +95,39 @@ public class MyCollection implements DynamicArray{
 
 	public int[] rotate(int n) {
 		// TODO Auto-generated method stub
-		 for (int i = 0; i < n; i++)
+		/* for (int i = 0; i < n; i++)
 		 {
 			 int temp = numArray[0], j;
 			   for (j = 0; j < numArray.length-1; j++)
 				   numArray[j] = numArray[j+1];    
 			   numArray[j] = temp;
 		 }
+		return numArray;*/
+		int k=0;
+		int arr[]= new int[n];
+		for(int i=0;i<n;i++)
+			arr[i]=numArray[i];
+		for(int i=0;i<addedSoFar-n;i++)
+			numArray[i]=numArray[i+n];
+		for(int i=(addedSoFar)-n;i<addedSoFar;i++)
+			numArray[i]=arr[k++];
+		
 		return numArray;
 	}
 	public String toString( )
 	{
-		/*String[] s=new String[numArray.length];
-		for(int i=0;i<numArray.length;i++)
+		String s="{";
+		if( addedSoFar!=0) 
 		{
-			s[i]=String.valueOf(numArray[i]);
+			for(int i=0;i< addedSoFar-1;i++)
+			{
+				s=s+numArray[i]+",";
+			}
+			s=s+numArray[ addedSoFar-1]+"}";
 		}
-		String a=
-		for(int i=0;i<s.length;i++)
-		{
-			if(i!=0 && i!=s.length-1)
-				a=a+",";
-			a=a+s[i];
-				
+		if( addedSoFar==0) {
+			return "{}";
 		}
-		return "{"+a+"}";*/
-		/*String a=Arrays.toString(numArray); //toString the List or Vector
-		String ar[]=a.substring(1,a.length()-1).split(", ");
-		List<String> arrayList = new ArrayList<>(); 
-		Collections.addAll(arrayList, ar); 		//System.out.println(Arrays.toString(ar));
-	//	return "{" + Arrays.toString(ar) + "}";
-		return   Arrays.toString(ar) ;*/
-		
-		
-			String result = "{";
-		      for (int i = 0; i < addedSoFar; i++) {
-		         if (i > 0) {
-		            result = result + ",";
-		         }
-		         String item =Arrays.toString(numArray);
-		         result = result + item;
-		      }
-		      result = result + "}";
-		      return result;
-		
+		return s;
 	}
-	
-
 }
